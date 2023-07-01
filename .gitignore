@@ -1,0 +1,6 @@
+# Python
+db.sqlite3
+/venv
+*__pycache__
+/media
+/node_modules
