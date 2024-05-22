@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import re
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    #Django apps
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,8 +44,9 @@ INSTALLED_APPS = [
     'home',
 
     # Third party apps
-    'inertia',      #https://github.com/inertiajs/inertia-django
-    'django_vite',  #https://github.com/MrBin99/django-vite
+    'inertia',  # https://github.com/inertiajs/inertia-django
+    'django_vite',  # https://github.com/MrBin99/django-vite
+    'js_routes',  # https://pypi.org/project/django-js-routes/
 
 ]
 
@@ -59,7 +61,7 @@ MIDDLEWARE = [
 
     # Inertia
     'inertia.middleware.InertiaMiddleware',
-    'django_inertia.middleware.inertia_share' # Inertia Share Middleware.
+    'django_inertia.middleware.inertia_share'  # Inertia Share Middleware.
 ]
 
 ROOT_URLCONF = 'django_inertia.urls'
@@ -67,7 +69,7 @@ ROOT_URLCONF = 'django_inertia.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'templates'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,29 +127,57 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-STATIC_URL = '/static/'
-
-# https://github.com/MrBin99/django-vite-example/
-# Where ViteJS assets are built.
-DJANGO_VITE_ASSETS_PATH = BASE_DIR / "static" / "dist"
-
-# If use HMR or not.
-DJANGO_VITE_DEV_MODE = DEBUG
-
-# Name of static files folder (after called python manage.py collectstatic)
-STATIC_ROOT = BASE_DIR / "static"
-
-# Include DJANGO_VITE_ASSETS_PATH into STATICFILES_DIRS to be copied inside
-# when run command python manage.py collectstatic
-# STATICFILES_DIRS = [DJANGO_VITE_ASSETS_PATH]
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Inertia
-INERTIA_LAYOUT = 'base.html'
+
+# If use HMR or not.
+DJANGO_VITE_DEV_MODE = DEBUG  # follow Django's dev mode
+
+# https://github.com/MrBin99/django-vite-example/
+# Where ViteJS assets are built.
+DJANGO_VITE_ASSETS_PATH = BASE_DIR / "home" / "static" / "dist"
+
+# Vite 3 defaults to 5173. Default for django-vite is 3000, which is the default for Vite 2.
+DJANGO_VITE_DEV_SERVER_PORT = 5173
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
+
+STATIC_URL = 'static/'
+
+# Name of static files folder (after called python manage.py collectstatic)
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Include DJANGO_VITE_ASSETS_PATH into STATICFILES_DIRS to be copied inside
+# when run command python manage.py collectstatic
+
+STATICFILES_DIRS = [DJANGO_VITE_ASSETS_PATH]
+
+
+# Inertia settings
+INERTIA_LAYOUT = BASE_DIR / "home" / "templates/index.html"
+
+# Vite generates files with 8 hash digits
+# http://whitenoise.evans.io/en/stable/django.html#WHITENOISE_IMMUTABLE_FILE_TEST
+
+
+def immutable_file_test(path, url):
+    # Match filename with 12 hex digits before the extension
+    # e.g. app.db8f2edc0c8a.js
+    return re.match(r"^.+\.[0-9a-f]{8,12}\..+$", url)
+
+
+WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
+
+
+# Javascript Routes
+
+JS_ROUTES_INCLUSION_LIST = [
+    'home:home',
+    'home:events',
+    'home:single_event',
+]
