@@ -4,3 +4,5 @@ db.sqlite3
 *__pycache__
 /media
 /node_modules
+*/static/dist
+/staticfiles
