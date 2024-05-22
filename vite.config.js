@@ -4,32 +4,23 @@ import dynamicImport from "vite-plugin-dynamic-import";
 
 module.exports = {
   plugins: [vue(), dynamicImport()],
-  root: resolve("./static/src"),
+  root: resolve("./home/static/src"),
   base: "/static/",
-  server: {
-    host: "localhost",
-    port: 3000,
-    open: false,
-    watch: {
-      usePolling: true,
-      disableGlobbing: false,
-    },
-  },
   resolve: {
     extensions: [".js", ".json", ".vue"],
   },
   build: {
-    outDir: resolve("./static/dist"),
+    outDir: resolve("./home/static/dist"),
     assetsDir: "",
     manifest: true,
     emptyOutDir: true,
     target: "es2015",
     rollupOptions: {
       input: {
-        main: resolve("./static/src/js/main.js"),
+        main: resolve("./home/static/src/js/main.js"),
       },
       output: {
-        chunkFileNames: "./static/src/js/[name].js?id=[chunkhash]",
+        chunkFileNames: "./home/static/src/js/[name].js?id=[chunkhash]",
       },
     },
   },
