@@ -12,6 +12,9 @@ let customRoute = (...args) => {
 };
 
 createInertiaApp({
+  progress: {
+    color: "#29d",
+  },
   resolve: (name) => {
     const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
     return pages[`./Pages/${name}.vue`];
@@ -22,6 +25,9 @@ createInertiaApp({
       .component("Head", Head)
       .component("Link", Link)
       .mixin({ methods: { route: customRoute } });
+
+    // Set global property for route
+    app.config.globalProperties.$route = customRoute;
 
     // mount the app
     app.mount(el);

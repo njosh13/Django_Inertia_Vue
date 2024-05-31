@@ -180,4 +180,11 @@ JS_ROUTES_INCLUSION_LIST = [
     'home:home',
     'home:events',
     'home:single_event',
+    'home:create_event',
+    'home:edit_event',
+
 ]
+
+
+CSRF_COOKIE_NAME = "XSRF-TOKEN"
+CSRF_HEADER_NAME = "HTTP_X_XSRF_TOKEN"
